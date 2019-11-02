@@ -1,6 +1,6 @@
 const corsBypassUrl = 'http://cors-anywhere.herokuapp.com';
 const domenUrl = 'nopainstruments.de';
-const apiUrl = 'http://localhost:85';
+const apiUrl = 'https://api.pstuffapp.com/';
 
 import axios from "axios";
 import { flattenDeep } from "lodash";
@@ -77,7 +77,14 @@ const compareData = (goods, categories, catalogue) => {
     })
 };
 
-const createDownloadLink = (url, name, className = 'link') => {
+const createDownloadLink = (val, name, className = 'link') => {
+    const data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(val));
+    let downloadLink = document.createElement( 'span' );
+    downloadLink.innerHTML = `<a class="${className}" href="data:${data}" download='${name}.json'>${name}</a>`;
+    siteWrapper.appendChild(downloadLink);
+};
+
+const createDownloadLink2 = (url, name, className = 'link') => {
     let downloadLink = document.createElement( 'span' );
     downloadLink.innerHTML = `<a class="${className}" href="${url}" download='${name}.json' target="_blank">${name}</a>`;
     siteWrapper.appendChild(downloadLink);
@@ -103,10 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         return Promise.all(requests)
                             .then(goods => {
                                 const treeView = compareData(goods, categories, catalogue);
-                                axios.post(`${apiUrl}/v1/json`, {
-                                    data: JSON.stringify(treeView)
-                                })
-                                .then(response => createDownloadLink(response.data, url.name));
+                                createDownloadLink(treeView, url.name);
                                 return goods
                             });
                     })
@@ -137,6 +141,6 @@ document.addEventListener("DOMContentLoaded", function () {
             axios.post(`${apiUrl}/v1/json`, {
                 data: JSON.stringify(resultGoods)
             })
-            .then(response => createDownloadLink(response.data, 'all goods'))
+            .then(response => createDownloadLink2(response.data, 'all goods'))
         });
 });
