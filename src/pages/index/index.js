@@ -3,7 +3,6 @@ const domenUrl = 'nopainstruments.de';
 const apiUrl = 'http://localhost:85';
 
 import axios from "axios";
-import { flattenDeep } from "lodash";
 
 const siteWrapper = document.getElementById('site-wrapper');
 
