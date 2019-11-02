@@ -1,6 +1,6 @@
 const corsBypassUrl = 'http://cors-anywhere.herokuapp.com';
 const domenUrl = 'nopainstruments.de';
-const apiUrl = 'https://api.pstuffapp.com/';
+const apiUrl = 'http://localhost:85';
 
 import axios from "axios";
 import { flattenDeep } from "lodash";
@@ -135,12 +135,18 @@ document.addEventListener("DOMContentLoaded", function () {
         {href: '/produkte/index.php?template=navListe&iLevel=3&sRefLevel=1_13', name:'Various Items'},
     ];
 
+    function flattenDeep(arr1) {
+        return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
+    }
+
     Promise.all(catalogs.map(el => parseCatalogPage(el)))
         .then(goods => {
             let resultGoods = flattenDeep(goods);
             axios.post(`${apiUrl}/v1/json`, {
                 data: JSON.stringify(resultGoods)
             })
-            .then(response => createDownloadLink2(response.data, 'all goods'))
+            .then(response => {
+                createDownloadLink2(response.data, 'all goods')
+            })
         });
 });
